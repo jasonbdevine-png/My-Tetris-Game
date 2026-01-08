@@ -37,7 +37,7 @@ class AudioEngine {
     initMusic() {
         if (this.musicElement) return;
         
-        this.musicElement = new Audio('audio/tetris-remix.mp3');
+        this.musicElement = new Audio('/audio/tetris-remix.mp3');
         this.musicElement.loop = true;
         this.musicElement.volume = this.musicVolume;
         
