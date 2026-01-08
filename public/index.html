@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tetris Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="tetris-bg">
+        <div class="falling-blocks">
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+            <div class="falling-block"></div>
+        </div>
+    </div>
+
+    <!-- Title Screen -->
+    <div id="titleScreen" class="title-screen">
+        <div class="title-content">
+            <h1 class="title-logo">TETRIS</h1>
+            <div class="title-tetrominos">
+                <div class="floating-piece piece-i"></div>
+                <div class="floating-piece piece-o"></div>
+                <div class="floating-piece piece-t"></div>
+                <div class="floating-piece piece-s"></div>
+                <div class="floating-piece piece-z"></div>
+                <div class="floating-piece piece-j"></div>
+                <div class="floating-piece piece-l"></div>
+            </div>
+            <div class="title-menu">
+                <button id="playBtn" class="menu-btn">
+                    <i class="fas fa-play"></i> PLAY
+                </button>
+                <button id="settingsBtn" class="menu-btn">
+                    <i class="fas fa-cog"></i> SETTINGS
+                </button>
+                <button id="highScoresBtn" class="menu-btn">
+                    <i class="fas fa-trophy"></i> HIGH SCORES
+                </button>
+            </div>
+            <p class="title-credits">Use keyboard or touch controls</p>
+        </div>
+        
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal hidden">
+            <div class="modal-content settings-modal-content">
+                <h2><i class="fas fa-cog"></i> SETTINGS</h2>
+                
+                <!-- Tabs -->
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="audio">
+                        <i class="fas fa-volume-up"></i> Audio
+                    </button>
+                    <button class="tab-btn" data-tab="controls">
+                        <i class="fas fa-keyboard"></i> Controls
+                    </button>
+                </div>
+                
+                <!-- Audio Tab -->
+                <div id="audioTab" class="tab-content active">
+                    <div class="settings-group">
+                        <label>
+                            <i class="fas fa-music"></i> Music Volume
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="musicVolume" min="0" max="100" value="50">
+                            <span id="musicVolumeValue">50%</span>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label>
+                            <i class="fas fa-volume-up"></i> SFX Volume
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="sfxVolume" min="0" max="100" value="70">
+                            <span id="sfxVolumeValue">70%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls Tab -->
+                <div id="controlsTab" class="tab-content">
+                    <div class="controls-info">
+                        <p>Click a control and press any key to rebind</p>
+                    </div>
+                    <div class="keybind-list">
+                        <div class="keybind-item">
+                            <span class="keybind-action">Move Left</span>
+                            <button class="keybind-btn" data-action="moveLeft">
+                                <span class="key-display" id="keyMoveLeft">A</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Move Right</span>
+                            <button class="keybind-btn" data-action="moveRight">
+                                <span class="key-display" id="keyMoveRight">D</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Soft Drop</span>
+                            <button class="keybind-btn" data-action="softDrop">
+                                <span class="key-display" id="keySoftDrop">S</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Rotate</span>
+                            <button class="keybind-btn" data-action="rotate">
+                                <span class="key-display" id="keyRotate">W</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Hard Drop</span>
+                            <button class="keybind-btn" data-action="hardDrop">
+                                <span class="key-display" id="keyHardDrop">SPACE</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Pause</span>
+                            <button class="keybind-btn" data-action="pause">
+                                <span class="key-display" id="keyPause">P</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="resetControlsBtn" class="menu-btn small secondary">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                    <div id="controlsWarning" class="controls-warning hidden">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>All required controls must be set!</span>
+                    </div>
+                </div>
+                
+                <button id="closeSettingsBtn" class="menu-btn small">
+                    <i class="fas fa-check"></i> DONE
+                </button>
+            </div>
+        </div>
+        
+        <!-- High Scores Modal -->
+        <div id="highScoresModal" class="modal hidden">
+            <div class="modal-content">
+                <h2><i class="fas fa-trophy"></i> HIGH SCORES</h2>
+                <ol id="titleHighScoreList" class="title-high-scores">
+                    <li>---</li>
+                    <li>---</li>
+                    <li>---</li>
+                    <li>---</li>
+                    <li>---</li>
+                </ol>
+                <button id="closeHighScoresBtn" class="menu-btn small">
+                    <i class="fas fa-arrow-left"></i> BACK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="game-screen hidden">
+        <div class="game-container">
+            <div class="side-panel left-panel">
+                <div class="panel-section">
+                    <h3>CONTROLS</h3>
+                    <div class="controls-list" id="controlsDisplay">
+                        <div class="control-item">
+                            <span class="key" id="displayMoveLeft">A</span>
+                            <span>Move Left</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayMoveRight">D</span>
+                            <span>Move Right</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayRotate">W</span>
+                            <span>Rotate</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displaySoftDrop">S</span>
+                            <span>Soft Drop</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayHardDrop">SPACE</span>
+                            <span>Hard Drop</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayPause">P</span>
+                            <span>Pause</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <h3>AUDIO</h3>
+                    <div class="audio-controls">
+                        <div class="audio-control">
+                            <i class="fas fa-music"></i>
+                            <input type="range" id="gameMusicVolume" min="0" max="100" value="50">
+                        </div>
+                        <div class="audio-control">
+                            <i class="fas fa-volume-up"></i>
+                            <input type="range" id="gameSfxVolume" min="0" max="100" value="70">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <div class="game-header">
+                    <button id="backToMenuBtn" class="icon-btn" title="Back to Menu">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    <h1 class="game-title">TETRIS</h1>
+                    <button id="muteBtn" class="icon-btn" title="Mute/Unmute">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="gameCanvas"></canvas>
+                    <div id="pauseOverlay" class="overlay hidden">
+                        <div class="overlay-content">
+                            <h2>PAUSED</h2>
+                            <p>Press <span id="pauseKeyDisplay">P</span> or tap to continue</p>
+                            <button id="resumeBtn" class="game-btn">RESUME</button>
+                        </div>
+                    </div>
+                    <div id="gameOverOverlay" class="overlay hidden">
+                        <div class="overlay-content">
+                            <h2>GAME OVER</h2>
+                            <p>Final Score: <span id="finalScore">0</span></p>
+                            <button id="restartBtn" class="game-btn">PLAY AGAIN</button>
+                            <button id="menuBtn" class="game-btn secondary">MAIN MENU</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Touch Controls - Always visible on mobile -->
+                <div class="touch-controls" id="touchControls">
+                    <div class="touch-row">
+                        <button id="touchRotate" class="touch-btn rotate-btn" aria-label="Rotate">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <div class="touch-row">
+                        <button id="touchLeft" class="touch-btn" aria-label="Move Left">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="touchDown" class="touch-btn" aria-label="Soft Drop">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <button id="touchRight" class="touch-btn" aria-label="Move Right">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="touch-row">
+                        <button id="touchDrop" class="touch-btn drop-btn" aria-label="Hard Drop">
+                            <i class="fas fa-angles-down"></i> DROP
+                        </button>
+                        <button id="touchPause" class="touch-btn pause-btn" aria-label="Pause">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-panel right-panel">
+                <div class="panel-section">
+                    <h3>NEXT</h3>
+                    <canvas id="nextCanvas"></canvas>
+                </div>
+                <div class="panel-section">
+                    <h3>SCORE</h3>
+                    <div id="score" class="stat-value">0</div>
+                </div>
+                <div class="panel-section">
+                    <h3>LEVEL</h3>
+                    <div id="level" class="stat-value">1</div>
+                </div>
+                <div class="panel-section">
+                    <h3>LINES</h3>
+                    <div id="lines" class="stat-value">0</div>
+                </div>
+                <div class="panel-section high-scores">
+                    <h3>HIGH SCORES</h3>
+                    <ol id="highScoreList">
+                        <li>---</li>
+                        <li>---</li>
+                        <li>---</li>
+                        <li>---</li>
+                        <li>---</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
