@@ -1203,11 +1203,15 @@ class TetrisGame {
             // Animate
             this.playLineClearAnimation(linesToClear);
             
-            // Remove lines
-            for (const row of linesToClear.sort((a, b) => b - a)) {
-                this.board.splice(row, 1);
-                this.board.unshift(new Array(COLS).fill(null));
+            // Create new board without the cleared lines
+            const newBoard = this.board.filter((_, index) => !linesToClear.includes(index));
+            
+            // Add empty rows at the top to maintain board size
+            while (newBoard.length < ROWS) {
+                newBoard.unshift(new Array(COLS).fill(null));
             }
+            
+            this.board = newBoard;
 
             this.lines += linesToClear.length;
 
