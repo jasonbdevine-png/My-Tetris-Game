@@ -315,6 +315,75 @@ class AudioEngine {
             }
         }
     }
+
+    // Dynamic music speed based on level
+    setMusicSpeed(speed) {
+        if (this.musicElement) {
+            // Clamp speed between 0.8 and 1.5
+            const clampedSpeed = Math.max(0.8, Math.min(1.5, speed));
+            this.musicElement.playbackRate = clampedSpeed;
+        }
+    }
+
+    // Play achievement sound
+    playAchievement() {
+        this.init();
+        this.resume();
+        
+        const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                this.playNote(freq, 0.2, 'square', this.sfxGain, 0.4);
+                this.playNote(freq * 2, 0.2, 'sine', this.sfxGain, 0.2);
+            }, i * 100);
+        });
+    }
+
+    // Play T-Spin sound
+    playTSpin() {
+        this.init();
+        this.resume();
+        
+        this.playNote(523, 0.1, 'square', this.sfxGain, 0.4);
+        setTimeout(() => this.playNote(659, 0.1, 'square', this.sfxGain, 0.4), 50);
+        setTimeout(() => this.playNote(784, 0.15, 'square', this.sfxGain, 0.5), 100);
+        setTimeout(() => this.playNote(1047, 0.2, 'sawtooth', this.sfxGain, 0.3), 150);
+    }
+
+    // Play combo sound
+    playCombo(comboCount) {
+        this.init();
+        this.resume();
+        
+        const baseFreq = 300 + (comboCount * 50);
+        this.playNote(baseFreq, 0.1, 'square', this.sfxGain, 0.35);
+        setTimeout(() => {
+            this.playNote(baseFreq * 1.5, 0.15, 'square', this.sfxGain, 0.35);
+        }, 60);
+    }
+
+    // Play level up sound
+    playLevelUp() {
+        this.init();
+        this.resume();
+        
+        const notes = [440, 550, 660, 880];
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                this.playNote(freq, 0.15, 'square', this.sfxGain, 0.4);
+            }, i * 80);
+        });
+    }
+
+    // Play hold piece sound
+    playHold() {
+        this.init();
+        this.resume();
+        this.playNote(220, 0.1, 'triangle', this.sfxGain, 0.3);
+        setTimeout(() => {
+            this.playNote(330, 0.1, 'triangle', this.sfxGain, 0.3);
+        }, 50);
+    }
 }
 
 // Global audio engine instance

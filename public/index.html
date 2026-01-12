@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Tetris Game</title>
+    <title>Jason's Tetris</title>
+    <meta name="description" content="A classic Tetris game by Jason Devine - Made with Genspark AI">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Animated Background -->
-    <div class="tetris-bg">
+    <div class="tetris-bg" id="tetrisBg">
         <div class="falling-blocks">
             <div class="falling-block"></div>
             <div class="falling-block"></div>
@@ -28,7 +33,7 @@
     <!-- Title Screen -->
     <div id="titleScreen" class="title-screen">
         <div class="title-content">
-            <h1 class="title-logo">TETRIS</h1>
+            <h1 class="title-logo">JASON'S<br>TETRIS</h1>
             <div class="title-tetrominos">
                 <div class="floating-piece piece-i"></div>
                 <div class="floating-piece piece-o"></div>
@@ -42,16 +47,83 @@
                 <button id="playBtn" class="menu-btn">
                     <i class="fas fa-play"></i> PLAY
                 </button>
+                <button id="gameModeBtn" class="menu-btn">
+                    <i class="fas fa-gamepad"></i> GAME MODE
+                </button>
+                <button id="leaderboardBtn" class="menu-btn">
+                    <i class="fas fa-globe"></i> LEADERBOARD
+                </button>
                 <button id="settingsBtn" class="menu-btn">
                     <i class="fas fa-cog"></i> SETTINGS
                 </button>
-                <button id="highScoresBtn" class="menu-btn">
-                    <i class="fas fa-trophy"></i> HIGH SCORES
+                <button id="statsBtn" class="menu-btn">
+                    <i class="fas fa-chart-bar"></i> STATISTICS
+                </button>
+                <button id="creditsBtn" class="menu-btn secondary">
+                    <i class="fas fa-info-circle"></i> CREDITS
                 </button>
             </div>
             <p class="title-credits">Use keyboard or touch controls</p>
         </div>
         
+        <!-- Game Mode Modal -->
+        <div id="gameModeModal" class="modal hidden">
+            <div class="modal-content">
+                <h2><i class="fas fa-gamepad"></i> GAME MODE</h2>
+                <div class="mode-list">
+                    <button class="mode-btn active" data-mode="marathon">
+                        <i class="fas fa-infinity"></i>
+                        <span class="mode-name">MARATHON</span>
+                        <span class="mode-desc">Classic endless mode</span>
+                    </button>
+                    <button class="mode-btn" data-mode="sprint">
+                        <i class="fas fa-stopwatch"></i>
+                        <span class="mode-name">SPRINT</span>
+                        <span class="mode-desc">Clear 40 lines fastest</span>
+                    </button>
+                    <button class="mode-btn" data-mode="ultra">
+                        <i class="fas fa-clock"></i>
+                        <span class="mode-name">ULTRA</span>
+                        <span class="mode-desc">High score in 2 minutes</span>
+                    </button>
+                    <button class="mode-btn" data-mode="zen">
+                        <i class="fas fa-om"></i>
+                        <span class="mode-name">ZEN</span>
+                        <span class="mode-desc">Relaxed, no game over</span>
+                    </button>
+                </div>
+                <button id="closeGameModeBtn" class="menu-btn small">
+                    <i class="fas fa-check"></i> SELECT
+                </button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboardModal" class="modal hidden">
+            <div class="modal-content leaderboard-modal-content">
+                <h2><i class="fas fa-globe"></i> ONLINE LEADERBOARD</h2>
+                <div class="leaderboard-tabs">
+                    <button class="leaderboard-tab-btn active" data-mode="marathon">Marathon</button>
+                    <button class="leaderboard-tab-btn" data-mode="sprint">Sprint</button>
+                    <button class="leaderboard-tab-btn" data-mode="ultra">Ultra</button>
+                </div>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <div class="leaderboard-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                </div>
+                <div class="username-section">
+                    <label><i class="fas fa-user"></i> Your Username (optional)</label>
+                    <div class="username-input-group">
+                        <input type="text" id="usernameInput" placeholder="Enter username..." maxlength="20">
+                        <button id="saveUsernameBtn" class="small-btn"><i class="fas fa-save"></i></button>
+                    </div>
+                    <p class="username-hint">Set a username to save scores to leaderboard</p>
+                </div>
+                <button id="closeLeaderboardBtn" class="menu-btn small">
+                    <i class="fas fa-arrow-left"></i> BACK
+                </button>
+            </div>
+        </div>
+
         <!-- Settings Modal -->
         <div id="settingsModal" class="modal hidden">
             <div class="modal-content settings-modal-content">
@@ -114,15 +186,27 @@
                             </button>
                         </div>
                         <div class="keybind-item">
-                            <span class="keybind-action">Rotate</span>
-                            <button class="keybind-btn" data-action="rotate">
-                                <span class="key-display" id="keyRotate">W</span>
+                            <span class="keybind-action">Rotate CW</span>
+                            <button class="keybind-btn" data-action="rotateCW">
+                                <span class="key-display" id="keyRotateCW">W</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Rotate CCW</span>
+                            <button class="keybind-btn" data-action="rotateCCW">
+                                <span class="key-display" id="keyRotateCCW">Q</span>
                             </button>
                         </div>
                         <div class="keybind-item">
                             <span class="keybind-action">Hard Drop</span>
                             <button class="keybind-btn" data-action="hardDrop">
                                 <span class="key-display" id="keyHardDrop">SPACE</span>
+                            </button>
+                        </div>
+                        <div class="keybind-item">
+                            <span class="keybind-action">Hold Piece</span>
+                            <button class="keybind-btn" data-action="hold">
+                                <span class="key-display" id="keyHold">C</span>
                             </button>
                         </div>
                         <div class="keybind-item">
@@ -146,19 +230,97 @@
                 </button>
             </div>
         </div>
+
+        <!-- Statistics Modal -->
+        <div id="statsModal" class="modal hidden">
+            <div class="modal-content stats-modal-content">
+                <h2><i class="fas fa-chart-bar"></i> STATISTICS</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-gamepad"></i>
+                        <span class="stat-label">Games Played</span>
+                        <span class="stat-number" id="statGamesPlayed">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-lines-leaning"></i>
+                        <span class="stat-label">Total Lines</span>
+                        <span class="stat-number" id="statTotalLines">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-trophy"></i>
+                        <span class="stat-label">Best Score</span>
+                        <span class="stat-number" id="statBestScore">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="stat-label">Tetrises</span>
+                        <span class="stat-number" id="statTetrises">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-fire"></i>
+                        <span class="stat-label">Best Combo</span>
+                        <span class="stat-number" id="statBestCombo">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <span class="stat-label">Time Played</span>
+                        <span class="stat-number" id="statTimePlayed">0h 0m</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-percentage"></i>
+                        <span class="stat-label">Tetris Rate</span>
+                        <span class="stat-number" id="statTetrisRate">0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-spin fa-sync"></i>
+                        <span class="stat-label">T-Spins</span>
+                        <span class="stat-number" id="statTSpins">0</span>
+                    </div>
+                </div>
+                <h3 class="achievements-title"><i class="fas fa-medal"></i> ACHIEVEMENTS</h3>
+                <div id="achievementsList" class="achievements-list">
+                    <!-- Achievements populated by JS -->
+                </div>
+                <button id="closeStatsBtn" class="menu-btn small">
+                    <i class="fas fa-arrow-left"></i> BACK
+                </button>
+            </div>
+        </div>
         
-        <!-- High Scores Modal -->
-        <div id="highScoresModal" class="modal hidden">
-            <div class="modal-content">
-                <h2><i class="fas fa-trophy"></i> HIGH SCORES</h2>
-                <ol id="titleHighScoreList" class="title-high-scores">
-                    <li>---</li>
-                    <li>---</li>
-                    <li>---</li>
-                    <li>---</li>
-                    <li>---</li>
-                </ol>
-                <button id="closeHighScoresBtn" class="menu-btn small">
+        <!-- Credits Modal -->
+        <div id="creditsModal" class="modal hidden">
+            <div class="modal-content credits-modal-content">
+                <h2><i class="fas fa-info-circle"></i> CREDITS</h2>
+                <div class="credits-content">
+                    <div class="credit-section">
+                        <h3><i class="fas fa-user"></i> Created By</h3>
+                        <p class="creator-name">Jason Devine</p>
+                    </div>
+                    <div class="credit-section">
+                        <h3><i class="fas fa-robot"></i> Built With</h3>
+                        <p class="built-with">Made with <span class="genspark">Genspark AI</span></p>
+                    </div>
+                    <div class="credit-section">
+                        <h3><i class="fas fa-code"></i> Technologies</h3>
+                        <div class="tech-list">
+                            <span class="tech-badge">HTML5 Canvas</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                            <span class="tech-badge">Web Audio API</span>
+                            <span class="tech-badge">Hono</span>
+                            <span class="tech-badge">Cloudflare Pages</span>
+                        </div>
+                    </div>
+                    <div class="credit-section">
+                        <h3><i class="fas fa-music"></i> Music</h3>
+                        <p>Tetris Remix</p>
+                    </div>
+                    <div class="credit-section version-section">
+                        <p>Version 2.0</p>
+                        <p class="copyright">&copy; 2024 Jason Devine</p>
+                    </div>
+                </div>
+                <button id="closeCreditsBtn" class="menu-btn small">
                     <i class="fas fa-arrow-left"></i> BACK
                 </button>
             </div>
@@ -170,27 +332,39 @@
         <div class="game-container">
             <div class="side-panel left-panel">
                 <div class="panel-section">
+                    <h3>HOLD</h3>
+                    <canvas id="holdCanvas"></canvas>
+                </div>
+                <div class="panel-section">
                     <h3>CONTROLS</h3>
                     <div class="controls-list" id="controlsDisplay">
                         <div class="control-item">
                             <span class="key" id="displayMoveLeft">A</span>
-                            <span>Move Left</span>
+                            <span>Left</span>
                         </div>
                         <div class="control-item">
                             <span class="key" id="displayMoveRight">D</span>
-                            <span>Move Right</span>
+                            <span>Right</span>
                         </div>
                         <div class="control-item">
-                            <span class="key" id="displayRotate">W</span>
+                            <span class="key" id="displayRotateCW">W</span>
                             <span>Rotate</span>
                         </div>
                         <div class="control-item">
-                            <span class="key" id="displaySoftDrop">S</span>
-                            <span>Soft Drop</span>
+                            <span class="key" id="displayRotateCCW">Q</span>
+                            <span>CCW</span>
                         </div>
                         <div class="control-item">
-                            <span class="key" id="displayHardDrop">SPACE</span>
-                            <span>Hard Drop</span>
+                            <span class="key" id="displaySoftDrop">S</span>
+                            <span>Soft</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayHardDrop">SPC</span>
+                            <span>Hard</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key" id="displayHold">C</span>
+                            <span>Hold</span>
                         </div>
                         <div class="control-item">
                             <span class="key" id="displayPause">P</span>
@@ -218,13 +392,19 @@
                     <button id="backToMenuBtn" class="icon-btn" title="Back to Menu">
                         <i class="fas fa-home"></i>
                     </button>
-                    <h1 class="game-title">TETRIS</h1>
+                    <h1 class="game-title">JASON'S TETRIS</h1>
                     <button id="muteBtn" class="icon-btn" title="Mute/Unmute">
                         <i class="fas fa-volume-up"></i>
                     </button>
                 </div>
-                <div class="canvas-wrapper">
+                <div class="game-info-bar">
+                    <div class="mode-display" id="modeDisplay">MARATHON</div>
+                    <div class="combo-display hidden" id="comboDisplay">COMBO x<span id="comboCount">0</span></div>
+                    <div class="timer-display hidden" id="timerDisplay">2:00</div>
+                </div>
+                <div class="canvas-wrapper" id="canvasWrapper">
                     <canvas id="gameCanvas"></canvas>
+                    <div id="lineClearEffect" class="line-clear-effect hidden"></div>
                     <div id="pauseOverlay" class="overlay hidden">
                         <div class="overlay-content">
                             <h2>PAUSED</h2>
@@ -236,16 +416,34 @@
                         <div class="overlay-content">
                             <h2>GAME OVER</h2>
                             <p>Final Score: <span id="finalScore">0</span></p>
+                            <div id="newHighScoreMsg" class="new-high-score hidden">
+                                <i class="fas fa-star"></i> NEW HIGH SCORE! <i class="fas fa-star"></i>
+                            </div>
+                            <div id="submitScoreSection" class="submit-score-section hidden">
+                                <p>Submit to leaderboard?</p>
+                                <button id="submitScoreBtn" class="game-btn"><i class="fas fa-upload"></i> SUBMIT</button>
+                            </div>
                             <button id="restartBtn" class="game-btn">PLAY AGAIN</button>
                             <button id="menuBtn" class="game-btn secondary">MAIN MENU</button>
                         </div>
                     </div>
+                    <div id="countdownOverlay" class="overlay hidden">
+                        <div class="countdown-content">
+                            <span id="countdownNumber">3</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Touch Controls - Always visible on mobile -->
+                <!-- Touch Controls -->
                 <div class="touch-controls" id="touchControls">
                     <div class="touch-row">
-                        <button id="touchRotate" class="touch-btn rotate-btn" aria-label="Rotate">
+                        <button id="touchHold" class="touch-btn hold-btn" aria-label="Hold">
+                            <i class="fas fa-hand-holding"></i>
+                        </button>
+                        <button id="touchRotateCCW" class="touch-btn rotate-ccw-btn" aria-label="Rotate CCW">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button id="touchRotateCW" class="touch-btn rotate-btn" aria-label="Rotate CW">
                             <i class="fas fa-redo"></i>
                         </button>
                     </div>
@@ -304,5 +502,15 @@
 
     <script src="/js/audio.js"></script>
     <script src="/js/game.js"></script>
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => {
+                    console.log('ServiceWorker registration failed:', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>

@@ -1,19 +1,27 @@
 {
   "name": "jasons-tetris",
   "type": "module",
+  "version": "2.0.0",
+  "description": "Jason's Tetris - A classic Tetris game with modern features",
+  "author": "Jason Devine",
   "scripts": {
     "dev": "vite",
-    "dev:sandbox": "wrangler pages dev dist --ip 0.0.0.0 --port 3000",
+    "dev:sandbox": "wrangler pages dev dist --d1=jasons-tetris-db --local --ip 0.0.0.0 --port 3000",
     "build": "vite build",
-    "preview": "wrangler pages dev dist",
+    "preview": "wrangler pages dev dist --d1=jasons-tetris-db --local",
     "deploy": "npm run build && wrangler pages deploy dist",
-    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name JasonsTetris",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name jasons-tetris",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "db:create": "wrangler d1 create jasons-tetris-db",
+    "db:migrate:local": "wrangler d1 migrations apply jasons-tetris-db --local",
+    "db:migrate:prod": "wrangler d1 migrations apply jasons-tetris-db",
+    "db:reset": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate:local"
   },
   "dependencies": {
     "hono": "^4.11.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250705.0",
     "@hono/vite-build": "^1.2.0",
     "@hono/vite-dev-server": "^0.18.2",
     "vite": "^6.3.5",

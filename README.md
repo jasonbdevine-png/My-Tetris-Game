@@ -1,171 +1,179 @@
-# Tetris Game
+# Jason's Tetris
 
-A classic Tetris-style falling block puzzle game built with HTML5 Canvas, CSS, and vanilla JavaScript. Features an animated Tetris-themed background, custom MP3 background music, customizable controls, and touch controls for mobile play.
+A feature-rich Tetris game built with HTML5 Canvas, JavaScript, and deployed on Cloudflare Pages.
 
-## 🌐 Live Demo
+## Project Overview
+- **Name**: Jason's Tetris
+- **Version**: 2.0
+- **Creator**: Jason Devine
+- **Built With**: Genspark AI
 
-**Production URL**: https://jasons-tetris.pages.dev
+## URLs
+- **Production**: https://jasons-tetris.pages.dev
+- **GitHub**: https://github.com/jasonbdevine-png/My-Tetris-Game
 
-## 🎮 Features
+## Features
 
-### Currently Implemented
+### Core Gameplay
+- Classic Tetris mechanics with 7 tetromino shapes (I, O, T, S, Z, J, L)
+- SRS (Super Rotation System) with wall kicks
+- Ghost piece preview showing landing position
+- Hold piece functionality
+- 3-piece preview queue
+- Lock delay system with reset on movement
 
-#### Gameplay
-- **Classic Tetris Gameplay**: All 7 standard tetromino shapes (I, O, T, S, Z, J, L) with proper rotation states
-- **Ghost Piece**: Shows where the current piece will land
-- **Next Piece Preview**: See what's coming next
-- **Soft Drop**: Hold down to make pieces fall faster
-- **Hard Drop**: Instantly drop piece to the bottom
-- **Line Clearing**: Complete rows disappear and score points
-- **Level Progression**: Speed increases every 10 lines cleared
+### Game Modes
+- **Marathon**: Classic endless mode - play until you top out
+- **Sprint**: Clear 40 lines as fast as possible
+- **Ultra**: Score as high as possible in 2 minutes
+- **Zen**: Relaxed mode with no game over
 
-#### Visual Design
-- **Animated Tetris Background**:
-  - Moving grid pattern overlay
-  - Falling tetromino blocks animation
-  - Colorful tetromino silhouettes floating in background
-  - Gradient color scheme matching Tetris colors
-- **3D-style blocks** with highlights and shadows
-- **Ghost piece preview** showing landing position
-- **Responsive design** for all screen sizes
+### Advanced Mechanics
+- **T-Spin Detection**: Perform T-Spins for bonus points
+- **Combo System**: Chain line clears for multiplied scores
+- **Counter-Clockwise Rotation**: Full rotation in both directions
+- **Lock Delay**: Extra time to move pieces before locking
 
-#### Controls
+### Scoring System
+- 1 Line: 100 × Level
+- 2 Lines: 300 × Level
+- 3 Lines: 500 × Level
+- Tetris (4 Lines): 800 × Level
+- T-Spin Single: 800 × Level
+- T-Spin Double: 1200 × Level
+- T-Spin Triple: 1600 × Level
+- Combo Bonus: 50 × Combo × Level
+- Perfect Clear: 3000 × Level
+- Soft Drop: 1 point per cell
+- Hard Drop: 2 points per cell
 
-**Default Keyboard Controls:**
-| Key | Action |
-|-----|--------|
-| A / ← | Move piece left |
-| D / → | Move piece right |
-| W / ↑ | Rotate piece 90° clockwise |
-| S / ↓ | Soft drop (move down faster) |
-| Space | Hard drop (instant drop) |
-| P | Pause/Resume game |
+### Visual Effects
+- Animated background with falling tetris blocks
+- Level-based color themes (changes every 5 levels)
+- Screen shake on hard drops and tetrises
+- Line clear flash animations
+- Ghost piece with outlined style
 
-**Touch Controls (Mobile):**
-- Left/Right buttons: Move piece horizontally
-- Rotate button (purple): Rotate piece clockwise
-- Down button: Soft drop
-- DROP button (red): Hard drop
-- Pause button (orange): Pause/Resume game
-- Touch controls support hold-to-repeat for movement
+### Audio System
+- Background music (Tetris Remix) with loop
+- Dynamic music speed (increases with level)
+- Sound effects for all actions:
+  - Move, Rotate, Hard Drop, Land
+  - Line Clear (varies by lines cleared)
+  - T-Spin, Combo, Level Up
+  - Pause, Game Over, Menu Select
+- Separate volume controls for music and SFX
+- Mute toggle
 
-**Custom Control Schemes:**
-- Fully customizable key bindings in Settings → Controls tab
-- Click any control and press a new key to rebind
-- Controls are automatically validated before starting
-- Required controls: Move Left, Move Right, Soft Drop, Rotate, Pause
-- Reset to defaults option available
-- Settings saved to localStorage
+### Statistics & Achievements
+- Games played, Total lines, Best score
+- Tetrises, T-Spins, Perfect clears
+- Best combo, Max level, Time played
+- 14 achievements to unlock
 
-#### Audio
+### Online Leaderboard
+- Global leaderboards for each game mode
+- Optional username (play offline without account)
+- Submit scores to compete globally
+- Personal best tracking
 
-**Background Music:**
-- Custom MP3 music track ("Tetris Remix")
-- Loops continuously during gameplay
-- Stops on game over
-- Pauses when game is paused
+### Controls
+- **Desktop**: Fully customizable keyboard controls
+- **Mobile**: Touch buttons with haptic feedback
+- **Swipe Controls**: Swipe gestures on game canvas
+- Default Controls:
+  - A/Left Arrow: Move Left
+  - D/Right Arrow: Move Right
+  - W/Up Arrow: Rotate Clockwise
+  - Q: Rotate Counter-Clockwise
+  - S/Down Arrow: Soft Drop
+  - Space: Hard Drop
+  - C: Hold Piece
+  - P: Pause
 
-**Sound Effects:**
-- Piece landing sound
-- Line clear sound (varies by number of lines)
-- Tetris (4 lines) gets a special flourish
-- Pause/unpause sounds
-- Game over sound
-- Menu selection sounds
-- Move and rotate sounds
-- Hard drop sound
+### PWA Support
+- Installable as a Progressive Web App
+- Works offline after first load
+- App icons for home screen
 
-**Volume Controls:**
-- Separate sliders for music and sound effects
-- Available in Settings modal and during gameplay
-- Mute button for quick toggle
-- Settings persist between sessions
+## Technology Stack
+- **Frontend**: HTML5 Canvas, CSS3, Vanilla JavaScript
+- **Backend**: Hono Framework on Cloudflare Workers
+- **Database**: Cloudflare D1 (SQLite) for leaderboard
+- **Audio**: Web Audio API + HTML5 Audio
+- **Deployment**: Cloudflare Pages
 
-#### Scoring System
-- Single line: 100 points × level
-- Double: 300 points × level  
-- Triple: 500 points × level
-- Tetris (4 lines): 800 points × level
-- Soft drop: 1 point per cell
-- Hard drop: 2 points per cell dropped
-
-#### High Score System
-- Top 5 scores saved to localStorage
-- Displayed on both title screen and game screen
-
-## 📁 Project Structure
-
+## Project Structure
 ```
 webapp/
 ├── public/
 │   ├── index.html          # Main HTML file
+│   ├── manifest.json       # PWA manifest
+│   ├── sw.js              # Service worker
 │   ├── css/
-│   │   └── style.css       # Styling including animated backgrounds
+│   │   └── style.css      # All styles
 │   ├── js/
-│   │   ├── audio.js        # Audio engine (MP3 music + synthesized SFX)
-│   │   └── game.js         # Game engine, controls, and logic
-│   └── audio/
-│       └── tetris-remix.mp3  # Background music track
+│   │   ├── game.js        # Game engine
+│   │   └── audio.js       # Audio system
+│   ├── audio/
+│   │   └── tetris-remix.mp3
+│   └── icons/             # PWA icons
 ├── src/
-│   └── index.tsx           # Hono server entry point
-├── ecosystem.config.cjs    # PM2 configuration
-├── wrangler.jsonc          # Cloudflare Pages configuration
-├── vite.config.ts          # Vite build configuration
-├── package.json            # Dependencies and scripts
-└── README.md               # This file
+│   └── index.tsx          # Hono backend with API
+├── migrations/
+│   └── 0001_leaderboard.sql
+├── wrangler.jsonc
+├── package.json
+└── README.md
 ```
 
-## 🚀 Deployment
+## API Endpoints
+- `GET /api/leaderboard?mode=marathon` - Get leaderboard scores
+- `POST /api/leaderboard` - Submit a score
+- `GET /api/leaderboard/user/:username` - Get user's best scores
+- `GET /api/health` - Health check
 
-### URLs
-- **Production**: https://jasons-tetris.pages.dev
-- **GitHub**: https://github.com/jasonbdevine-png/My-Tetris-Game
+## Local Development
+```bash
+# Install dependencies
+npm install
 
-### Tech Stack
-- **Framework**: Hono
-- **Platform**: Cloudflare Pages
-- **Build Tool**: Vite
+# Apply database migrations (local)
+npm run db:migrate:local
 
-## 💾 Data Storage
+# Start development server
+npm run build
+pm2 start ecosystem.config.cjs
 
-The following data is stored in the browser's localStorage:
-- `tetrisHighScores`: Array of top 5 high scores
-- `tetrisMusicVolume`: Music volume setting (0-100)
-- `tetrisSfxVolume`: Sound effects volume setting (0-100)
-- `tetrisControls`: Custom key bindings object
+# Access at http://localhost:3000
+```
 
-## 🔧 Technical Details
+## Deployment
+```bash
+# Create D1 database (first time only)
+npm run db:create
 
-- Built with vanilla JavaScript (ES6+)
-- Uses HTML5 Canvas for rendering
-- Web Audio API for synthesized sound effects
-- HTML5 Audio element for MP3 music playback
-- CSS animations for background effects
-- No external dependencies required (except Google Fonts & Font Awesome via CDN)
-- Game runs at ~60 FPS using requestAnimationFrame
+# Apply migrations to production
+npm run db:migrate:prod
 
-## 🎨 Tetromino Colors
+# Deploy to Cloudflare Pages
+npm run deploy:prod
+```
 
-- **I-piece**: Cyan (#00f5ff)
-- **O-piece**: Yellow (#ffeb3b)
-- **T-piece**: Purple (#9c27b0)
-- **S-piece**: Green (#4caf50)
-- **Z-piece**: Red (#f44336)
-- **J-piece**: Blue (#2196f3)
-- **L-piece**: Orange (#ff9800)
+## Data Storage
+- **LocalStorage Keys**:
+  - `jasonsTetrisControls` - Custom key bindings
+  - `jasonsTetrisMusicVolume` - Music volume setting
+  - `jasonsTetrisSfxVolume` - SFX volume setting
+  - `jasonsTetrisHighScores` - Local high scores (top 5)
+  - `jasonsTetrisStats` - Player statistics
+  - `jasonsTetrisUsername` - Optional username
+  - `jasonsTetrisMode` - Last selected game mode
 
-## 📱 Responsive Design
+## Credits
+- **Created by**: Jason Devine
+- **Built with**: Genspark AI
+- **Music**: Tetris Remix
 
-The game is fully responsive and adapts to different screen sizes:
-- **Desktop**: Side panels on left and right, keyboard controls
-- **Tablet/Mobile**: Panels stack vertically, touch controls appear automatically
-
-## 📝 Future Enhancements
-
-- Hold piece functionality
-- Customizable themes/skins
-- Online leaderboard
-- Multiplayer mode
-- More music tracks
-- Combo system
-- Counter-clockwise rotation option
+---
+© 2024 Jason Devine. All rights reserved.
