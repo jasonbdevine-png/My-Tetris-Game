@@ -7,12 +7,11 @@
     "nodejs_compat"
   ],
   // D1 Database for leaderboard
-  // For production: Run `npx wrangler d1 create jasons-tetris-db` and add the database_id
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "jasons-tetris-db",
-      "database_id": "local-placeholder"
+      "database_id": "2f27e787-952a-4752-bd38-ddeb6529fa9b"
     }
   ]
 }
